@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8spod2nfs2
+  labels:
+    app: k8spod2nfs2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: k8spod2nfs2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: k8spod2nfs2
+    spec:
+      containers:
+      - image: scottsbaldwin/docker-hello-world:latest
+        ports:
+        - containerPort: 80
+          name: k8spod2nfs2
+        imagePullPolicy: IfNotPresent
+        name: k8snfspod2
+        volumeMounts:
+          - name: nfs
+            mountPath: "/usr/share/nginx/html"
+      volumes:
+      - name: nfs
+        persistentVolumeClaim:
+          claimName: nfs
+      nodeSelector:
+        nodeName: node2
